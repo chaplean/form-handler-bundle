@@ -1,0 +1,5 @@
+services:
+    test.form.dummy_entity:
+        class: Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType
+        tags:
+            - { name: 'form.type', alias: 'dummy_entity_form_type' }

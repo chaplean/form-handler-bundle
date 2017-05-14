@@ -29,7 +29,9 @@ class AppKernel extends Kernel
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Chaplean\Bundle\UnitBundle\ChapleanUnitBundle(),
             new Liip\FunctionalTestBundle\LiipFunctionalTestBundle(),
-            new Chaplean\Bundle\BundleNameBundle\ChapleanBundleNameBundle(),
+            new Chaplean\Bundle\FormHandlerBundle\ChapleanFormHandlerBundle(),
+			new FOS\RestBundle\FOSRestBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
         );
 
         return $bundles;
@@ -66,6 +68,6 @@ class AppKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir() . '/config/config.yml');
+        $loader->load($this->getRootDir() . '/config/config_'. $this->getEnvironment() .'.yml');
     }
 }

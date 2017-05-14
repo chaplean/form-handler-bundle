@@ -1,1 +1,11 @@
-#services:
+services:
+    chaplean_form_handler.form_handler:
+        class: Chaplean\Bundle\FormHandlerBundle\Form\FormHandler
+        arguments: ['@service_container', '@doctrine', '@form.factory', '@fos_rest.view_handler.default']
+
+    chaplean_form_handler.success_handler.persister:
+        class: Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler
+        arguments: ['@doctrine']
+
+    chaplean_form_handler.failure_handler.angular:
+        class: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler

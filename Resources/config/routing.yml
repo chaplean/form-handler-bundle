@@ -1,3 +1,3 @@
-#BundleName_index:
+#FormHandler_index:
 #    path: /
-#    defaults: { _controller: ChapleanBundleNameBundle:Default:index }
+#    defaults: { _controller: ChapleanFormHandlerBundle:Default:index }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Chaplean\Bundle\BundleNameBundle\DependencyInjection;
+namespace Chaplean\Bundle\FormHandlerBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class ChapleanBundleNameExtension extends Extension
+class ChapleanFormHandlerExtension extends Extension
 {
     /**
      * @param array            $configs
@@ -27,5 +27,11 @@ class ChapleanBundleNameExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        // Only load test config in test env
+        if ($container->getParameter('kernel.environment') === 'test') {
+            $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Tests/Resources/config'));
+            $loader->load('services.yml');
+        }
     }
 }

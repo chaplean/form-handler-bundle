@@ -9,4 +9,4 @@
   - command: chmod -R +x ./bin/
   - command: ./bin/phpunit.sh default mysql
   - command: php bin/coveralls
-  - command: ./bin/satis-build.sh chaplean/bundle-name-bundle
+  - command: ./bin/satis-build.sh chaplean/form-handler-bundle

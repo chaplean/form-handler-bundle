@@ -1,0 +1,12 @@
+imports:
+    - { resource: config.yml }
+
+# Doctrine Configuration
+doctrine:
+    orm:
+        auto_mapping: false
+        mappings:
+            mapping:
+                type:   annotation
+                dir:    '%kernel.root_dir%/../Tests/Resources/Entity'
+                prefix: 'Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity'
