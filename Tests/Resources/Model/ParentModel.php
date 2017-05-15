@@ -25,7 +25,7 @@ class ParentModel
     /**
      * @return ChildModel
      */
-    public function getChild() : ChildModel
+    public function getChild()
     {
         return $this->child;
     }
