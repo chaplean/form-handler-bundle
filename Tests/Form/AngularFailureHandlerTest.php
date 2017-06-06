@@ -14,7 +14,7 @@ use Chaplean\Bundle\UnitBundle\Test\LogicalTestCase;
 use Symfony\Component\Form\FormFactory;
 
 /**
- * Class AngularFailureHanlderTest
+ * Class AngularFailureHandlerTest
  *
  * @package   Tests\Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Matthias - Chaplean <matthias@chaplean.com>
@@ -23,7 +23,7 @@ use Symfony\Component\Form\FormFactory;
  *
  * @coversDefaultClass Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
  */
-class AngularFailureHanlderTest extends LogicalTestCase
+class AngularFailureHandlerTest extends LogicalTestCase
 {
     /**
      * @return void
