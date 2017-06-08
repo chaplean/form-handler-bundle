@@ -28,7 +28,8 @@
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~5.0"
+        "sensio/distribution-bundle": "~5.0",
+        "friendsofsymfony/rest-bundle": "~2.1"
     },
     "require-dev": {
         "chaplean/coding-standard": "1.1.*",
