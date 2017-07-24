@@ -19,8 +19,9 @@ interface SuccessHandlerInterface
      * but not for flush(). Its called right after this function.
      *
      * @param mixed $data
+     * @param array $parameters
      *
      * @return mixed Data used to build the response to the user
      */
-    public function onSuccess($data);
+    public function onSuccess($data, $parameters = array());
 }
