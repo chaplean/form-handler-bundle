@@ -61,6 +61,15 @@ class FormHandler
     /** @var ViewHandlerInterface */
     protected $viewHandler;
 
+    /** @var array */
+    protected $succesParameters;
+
+    /** @var array */
+    protected $preprocessorParameters;
+
+    /** @var array */
+    protected $failureParameters;
+
     /**
      * FormHandler constructor.
      *
@@ -81,12 +90,14 @@ class FormHandler
      * Name in the container of the SuccessHandler you want to setup
      *
      * @param string $successHandler
+     * @param array  $parameters
      *
-     * @return $this
+     * @return self
      */
-    public function successHandler(string $successHandler) : self
+    public function successHandler(string $successHandler, $parameters = array()): self
     {
         $this->successHandlerContainerId = $successHandler;
+        $this->succesParameters = $parameters;
 
         return $this;
     }
@@ -95,12 +106,14 @@ class FormHandler
      * Name in the container of the FailureHandler you want to setup
      *
      * @param string $failureHandler
+     * @param array  $parameters
      *
-     * @return $this
+     * @return self
      */
-    public function failureHandler(string $failureHandler) : self
+    public function failureHandler(string $failureHandler, $parameters = array()) : self
     {
         $this->failureHandlerContainerId = $failureHandler;
+        $this->failureParameters = $parameters;
 
         return $this;
     }
@@ -109,12 +122,14 @@ class FormHandler
      * Name in the container of the Preprocessor you want to setup
      *
      * @param string $preprocessor
+     * @param array  $parameters
      *
-     * @return $this
+     * @return self
      */
-    public function preprocessor(string $preprocessor) : self
+    public function preprocessor(string $preprocessor, $parameters = array()) : self
     {
         $this->preprocessorContainerId = $preprocessor;
+        $this->preprocessorParameters = $parameters;
 
         return $this;
     }
@@ -124,7 +139,7 @@ class FormHandler
      *
      * @param string $validator
      *
-     * @return $this
+     * @return self
      */
     public function validator(string $validator) : self
     {
@@ -138,7 +153,7 @@ class FormHandler
      *
      * @param array $groups
      *
-     * @return $this
+     * @return self
      */
     public function setGroups(array $groups) : self
     {
@@ -164,7 +179,7 @@ class FormHandler
 
         $data = $request->request->all();
         if ($this->preprocessor !== null) {
-            $data = $this->preprocessor->preprocess($data);
+            $data = $this->preprocessor->preprocess($data, $this->preprocessorParameters);
         }
 
         $customValidation = true;
@@ -176,7 +191,7 @@ class FormHandler
         $formValidation = $form->isValid();
 
         if ($formValidation && $customValidation) {
-            $entity = $this->successHandler->onSuccess($form->getData());
+            $entity = $this->successHandler->onSuccess($form->getData(), $this->succesParameters);
             $this->em->flush();
 
             $view = View::create($entity);
@@ -191,7 +206,7 @@ class FormHandler
                 ? $this->customValidator->getErrors()
                 : [];
 
-            $data = $this->failureHandler->onFailure($form->getErrors(true), $customErrors);
+            $data = $this->failureHandler->onFailure($form->getErrors(true), $customErrors, $this->failureParameters);
             $view = View::create($data, Response::HTTP_BAD_REQUEST);
         }
 

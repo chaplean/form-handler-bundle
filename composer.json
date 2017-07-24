@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "Chaplean",
-            "homepage": "http://www.chaplean.com"
+            "homepage": "http://www.chaplean.coop"
         }
     ],
     "autoload": {
@@ -18,7 +18,7 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "https://satis.chaplean.com"
+            "url": "https://satis.chaplean.coop"
         }
     ],
     "require": {
@@ -29,7 +29,8 @@
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~5.0",
-        "friendsofsymfony/rest-bundle": "~2.1"
+        "friendsofsymfony/rest-bundle": "~2.1",
+        "jms/serializer-bundle": "^1.1"
     },
     "require-dev": {
         "chaplean/coding-standard": "1.1.*",

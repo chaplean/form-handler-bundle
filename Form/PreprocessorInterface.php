@@ -16,8 +16,9 @@ interface PreprocessorInterface
      * Apply a transformation pass on request data before it is given to the form
      *
      * @param array $data
+     * @param array $parameters
      *
      * @return array
      */
-    public function preprocess(array $data);
+    public function preprocess(array $data, $parameters = array());
 }

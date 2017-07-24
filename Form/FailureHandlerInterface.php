@@ -19,8 +19,9 @@ interface FailureHandlerInterface
      *
      * @param FormErrorIterator $formErrors
      * @param array             $customErrors
+     * @param array             $parameters
      *
      * @return mixed Data used to build the response to the user
      */
-    public function onFailure(FormErrorIterator $formErrors, array $customErrors);
+    public function onFailure(FormErrorIterator $formErrors, array $customErrors, $parameters = array());
 }
