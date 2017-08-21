@@ -9,7 +9,7 @@ services:
             - mysql:mysql
     mysql:
         container_name: form-handler_bundle_mysql
-        image: chaplean/mysql
+        image: chaplean/mysql:mariadb10.1
         volumes:
             - mysql_data:/var/lib/mysql:rw
         restart: always

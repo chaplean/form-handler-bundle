@@ -3,84 +3,41 @@
 namespace Tests\Chaplean\Bundle\FormHandlerBundle\Form;
 
 use Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityContainerType;
+use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\ChapleanUnitTrait;
+use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\ChildModelType;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\EntityDummyEntityType;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\ParentModelType;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Model\DummyEntityContainer;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Model\ParentModel;
-use Chaplean\Bundle\UnitBundle\Test\LogicalTestCase;
-use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormErrorIterator;
+use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
  * Class AngularFailureHandlerTest
  *
  * @package   Tests\Chaplean\Bundle\FormHandlerBundle\Form
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
- *
- * @coversDefaultClass Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
  */
-class AngularFailureHandlerTest extends LogicalTestCase
+class AngularFailureHandlerTest extends TypeTestCase
 {
-    /**
-     * @return void
-     */
-    public static function setUpBeforeClass()
-    {
-        self::$withDefaultData = false;
-        self::$datafixturesEnabled = false;
-
-        parent::setUpBeforeClass();
-    }
+    use ChapleanUnitTrait;
 
     /**
-     * @covers ::onFailure
-     *
-     * @return void
-     */
-    public function testOnFailure()
-    {
-        /** @var FormFactory $formFactory */
-        $formFactory = $this->getContainer()->get('form.factory');
-        $form = $formFactory->create(DummyEntityType::class, new DummyEntity());
-        $form->submit(['extra_thing' => 'that shouldnt be there']);
-
-        $this->assertFalse($form->isValid());
-
-        $handler = $this->getContainer()->get('chaplean_form_handler.failure_handler.angular');
-        $errorToArray = $this->getNotPublicMethod(AngularFailureHandler::class, 'onFailure');
-        $errors = $errorToArray->invoke($handler, $form->getErrors(true), []);
-
-        $this->assertEquals(
-            [
-                'dummy_entity_form_type' => [
-                    'Ce formulaire ne doit pas contenir des champs supplémentaires. (extra_thing)'
-                ],
-                'dummy_entity_form_type[name]' => 'not blank'
-            ],
-            $errors
-        );
-    }
-
-    /**
-     * @covers ::errorToArray
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler::errorToArray
      *
      * @return void
      */
     public function testErrorToArray()
     {
-        /** @var FormFactory $formFactory */
-        $formFactory = $this->getContainer()->get('form.factory');
-        $form = $formFactory->create(DummyEntityType::class, new DummyEntity());
-        $form->submit(['name' => 3.14, 'extra_thing' => 'that shouldnt be there']);
+        $form = $this->factory->create(DummyEntityType::class);
 
-        $this->assertFalse($form->isValid());
+        $error = new FormError('Ce formulaire ne doit pas contenir des champs supplémentaires. (extra_thing)');
+        $error->setOrigin($form);
 
         $errorToArray = $this->getNotPublicMethod(AngularFailureHandler::class, 'errorToArray');
-        $errors = $errorToArray->invoke(AngularFailureHandler::class, [], $form->getErrors(true)[0], []);
+        $errors = $errorToArray->invoke(new AngularFailureHandler(), [], $error, []);
 
         $this->assertEquals(
             [
@@ -93,25 +50,59 @@ class AngularFailureHandlerTest extends LogicalTestCase
     }
 
     /**
-     * @covers ::errorToArray
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler::errorToArray
      *
      * @return void
      */
     public function testErrorToArrayNestedForm()
     {
-        /** @var FormFactory $formFactory */
-        $formFactory = $this->getContainer()->get('form.factory');
-        $form = $formFactory->create(ParentModelType::class, new ParentModel());
-        $form->submit(['child' => ['name' => null]]);
+        $formParent = $this->factory->create(ParentModelType::class);
+        $formParent->submit(['child' => ['name' => null]]);
 
-        $this->assertFalse($form->isValid());
+        $errorChild = new FormError('not blank');
+        $errorChild->setOrigin($formParent->get('child')->get('name'));
+
+        $parentError = $errorChild;
 
         $errorToArray = $this->getNotPublicMethod(AngularFailureHandler::class, 'errorToArray');
-        $errors = $errorToArray->invoke(AngularFailureHandler::class, [], $form->getErrors(true)[0], []);
+        $errors = $errorToArray->invoke(new AngularFailureHandler(), [], $parentError, []);
 
         $this->assertEquals(
             [
                 'parent_model_form_type[child][name]' => 'not blank'
+            ],
+            $errors
+        );
+    }
+
+    /**
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler::onFailure
+     *
+     * @return void
+     */
+    public function testOnFailure()
+    {
+        $form = $this->factory->create(DummyEntityType::class);
+
+        $error1 = new FormError('Ce formulaire ne doit pas contenir des champs supplémentaires. (extra_thing)');
+        $error1->setOrigin($form);
+
+        $error2 = new FormError('not blank');
+        $error2->setOrigin($form->get('name'));
+
+        $errors = [$error1, $error2];
+
+        $formErrorIterator = new FormErrorIterator($form, $errors);
+
+        $handler = new AngularFailureHandler();
+        $errors = $handler->onFailure($formErrorIterator, []);
+
+        $this->assertEquals(
+            [
+                'dummy_entity_form_type'       => [
+                    'Ce formulaire ne doit pas contenir des champs supplémentaires. (extra_thing)'
+                ],
+                'dummy_entity_form_type[name]' => 'not blank'
             ],
             $errors
         );

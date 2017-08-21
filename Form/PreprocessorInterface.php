@@ -6,8 +6,8 @@ namespace Chaplean\Bundle\FormHandlerBundle\Form;
  * Interface PreprocessorInterface.
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Form
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
 interface PreprocessorInterface

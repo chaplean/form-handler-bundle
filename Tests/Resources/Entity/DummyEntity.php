@@ -10,8 +10,8 @@ use JMS\Serializer\Annotation as JMS;
  * Class DummyEntity
  *
  * @package   Test\Chaplean\Bundle\FormHandlerBundle\Resources\Entity
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  *
  * @ORM\Entity

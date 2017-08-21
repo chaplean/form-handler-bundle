@@ -2,13 +2,14 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,8 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class FormHandler
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Form
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
 class FormHandler
@@ -74,11 +75,11 @@ class FormHandler
      * FormHandler constructor.
      *
      * @param ContainerInterface   $container
-     * @param Registry             $registry
-     * @param FormFactory          $formFactory
+     * @param RegistryInterface    $registry
+     * @param FormFactoryInterface $formFactory
      * @param ViewHandlerInterface $viewHandler
      */
-    public function __construct(ContainerInterface $container, Registry $registry, FormFactory $formFactory, ViewHandlerInterface $viewHandler)
+    public function __construct(ContainerInterface $container, RegistryInterface $registry, FormFactoryInterface $formFactory, ViewHandlerInterface $viewHandler)
     {
         $this->container = $container;
         $this->em = $registry->getManager();
@@ -110,7 +111,7 @@ class FormHandler
      *
      * @return self
      */
-    public function failureHandler(string $failureHandler, $parameters = array()) : self
+    public function failureHandler(string $failureHandler, $parameters = array()): self
     {
         $this->failureHandlerContainerId = $failureHandler;
         $this->failureParameters = $parameters;
@@ -126,7 +127,7 @@ class FormHandler
      *
      * @return self
      */
-    public function preprocessor(string $preprocessor, $parameters = array()) : self
+    public function preprocessor(string $preprocessor, $parameters = array()): self
     {
         $this->preprocessorContainerId = $preprocessor;
         $this->preprocessorParameters = $parameters;
@@ -141,7 +142,7 @@ class FormHandler
      *
      * @return self
      */
-    public function validator(string $validator) : self
+    public function validator(string $validator): self
     {
         $this->customValidatorContainerId = $validator;
 
@@ -155,7 +156,7 @@ class FormHandler
      *
      * @return self
      */
-    public function setGroups(array $groups) : self
+    public function setGroups(array $groups): self
     {
         $this->groups = $groups;
 
@@ -171,7 +172,7 @@ class FormHandler
      *
      * @return Response
      */
-    public function handle(string $formContainerId, $entity, Request $request) : Response
+    public function handle(string $formContainerId, $entity, Request $request): Response
     {
         $this->constructHandlers();
 
@@ -182,10 +183,7 @@ class FormHandler
             $data = $this->preprocessor->preprocess($data, $this->preprocessorParameters);
         }
 
-        $customValidation = true;
-        if ($this->customValidator !== null) {
-            $customValidation = $this->customValidator->validate($data);
-        }
+        $customValidation = ($this->customValidator !== null) ? $this->customValidator->validate($data) : true;
 
         $form->submit($data);
         $formValidation = $form->isValid();
@@ -225,14 +223,18 @@ class FormHandler
 
         if ($this->preprocessorContainerId !== null) {
             $this->preprocessor = $this->container->get($this->preprocessorContainerId);
-        } else if ($this->successHandler instanceof PreprocessorInterface) {
-            $this->preprocessor = $this->successHandler;
+        } else {
+            if ($this->successHandler instanceof PreprocessorInterface) {
+                $this->preprocessor = $this->successHandler;
+            }
         }
 
         if ($this->customValidatorContainerId !== null) {
             $this->customValidator = $this->container->get($this->customValidatorContainerId);
-        } else if ($this->successHandler instanceof ValidatorInterface) {
-            $this->customValidator = $this->successHandler;
+        } else {
+            if ($this->successHandler instanceof ValidatorInterface) {
+                $this->customValidator = $this->successHandler;
+            }
         }
 
         if (!$this->successHandler instanceof SuccessHandlerInterface) {

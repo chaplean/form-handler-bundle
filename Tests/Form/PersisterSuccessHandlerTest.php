@@ -1,61 +1,43 @@
 <?php
 
-namespace Tests\Chaplean\Bundle\FormHandlerBundle\Form;
-
+use Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
-use Chaplean\Bundle\UnitBundle\Test\LogicalTestCase;
+use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Class PersisterSuccessHandlerTest
  *
  * @package   Tests\Chaplean\Bundle\FormHandlerBundle\Form
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
- *
- * @coversDefaultClass Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler
  */
-class PersisterSuccessHandlerTest extends LogicalTestCase
+class PersisterSuccessHandlerTest extends TestCase
 {
     /**
-     * @return void
-     */
-    public static function setUpBeforeClass()
-    {
-        self::$withDefaultData = false;
-        self::$datafixturesEnabled = false;
-
-        parent::setUpBeforeClass();
-    }
-
-    /**
-     * @covers ::__construct
-     *
-     * @return void
-     */
-    public function testConstruct()
-    {
-        $this->getContainer()->get('chaplean_form_handler.success_handler.persister');
-    }
-
-    /**
-     * @covers ::onSuccess
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler::onSuccess
      *
      * @return void
      */
     public function testOnSuccess()
     {
-        $handler = $this->getContainer()->get('chaplean_form_handler.success_handler.persister');
+        $em = \Mockery::mock(EntityManagerInterface::class);
+        $em->shouldReceive('persist')
+            ->once();
 
-        $repo = $this->em->getRepository(DummyEntity::class);
-        $this->assertEmpty($repo->findAll());
+        $registry = \Mockery::mock(RegistryInterface::class);
+        $registry->shouldReceive('getManager')
+            ->andReturn($em);
+
+        $handler = new PersisterSuccessHandler($registry);
 
         $dummy = new DummyEntity();
         $dummy->setName('test');
 
         $dummyEntity = $handler->onSuccess($dummy);
-        $this->em->flush();
 
-        $this->assertCount(1, $repo->findAll());
+        $this->assertEquals($dummy, $dummyEntity);
     }
 }

@@ -1,15 +1,2 @@
-# Cache and logs (Symfony3 directory structure)
-var/cache/*
-var/logs/*
-var/sessions/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
-
-# PHPUnit
-phpunit.xml
-
-# PhpStorm
-.idea
-
-# Database
-.db
+.*
+!private/ssh

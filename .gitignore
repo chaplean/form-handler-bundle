@@ -1,16 +1,6 @@
-# Cache and logs (Symfony3 directory structure)
-/var/*
-!var/.gitkeep
-
-# Parameters
-/app/config/parameters.yml
-
 # Managed by Composer
 /bin/*
 !bin/console
-!bin/phpunit.sh
-!bin/satis-build.sh
-!bin/services-waiting.sh
 /vendor/
 
 # Assets and user uploads
@@ -43,7 +33,7 @@
 coverage/
 
 # Codeship
-codeship.aes
+/codeship.aes
 
 # Database
 /.db
