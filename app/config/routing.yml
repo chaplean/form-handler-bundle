@@ -1,3 +1,0 @@
-#chaplean_form-handler:
-#    resource: '@ChapleanFormHandlerBundle/Resources/config/routing.yml'
-#    prefix:   /

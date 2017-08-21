@@ -8,8 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ChildModel
  *
  * @package   Test\Chaplean\Bundle\FormHandlerBundle\Resources\Model
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
 class ChildModel

@@ -1,12 +1,10 @@
 # Commands to execute in CodeShip
 - type: serial
-  services:
-  - application
+  service: application
   steps:
-  - command: cp ./app/config/parameters.yml.dist ./app/config/parameters.yml
   - command: cp ./phpunit.xml.dist ./phpunit-default.xml
   - command: composer install --prefer-dist --no-interaction
   - command: chmod -R +x ./bin/
   - command: ./bin/phpunit.sh default mysql
   - command: php bin/coveralls
-  - command: ./bin/satis-build.sh chaplean/form-handler-bundle
+  - command: ./private/satis-build.sh chaplean/form-handler-bundle

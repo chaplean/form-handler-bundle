@@ -12,8 +12,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class ChildModelType.
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type
- * @author    Matthias - Chaplean <matthias@chaplean.com>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.com)
+ * @author    Matthias - Chaplean <matthias@chaplean.coop>
+ * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
 class ChildModelType extends AbstractType
