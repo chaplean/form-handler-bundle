@@ -9,3 +9,6 @@ services:
 
     chaplean_form_handler.failure_handler.angular:
         class: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
+
+    chaplean_form_handler.form.handler.no_operation:
+        class: Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler
