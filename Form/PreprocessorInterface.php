@@ -20,5 +20,5 @@ interface PreprocessorInterface
      *
      * @return array
      */
-    public function preprocess(array $data, $parameters = array());
+    public function preprocess(array $data, array $parameters);
 }

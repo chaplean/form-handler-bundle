@@ -36,7 +36,7 @@ class PersisterSuccessHandler implements SuccessHandlerInterface
      *
      * @return mixed Data used to build the response to the user
      */
-    public function onSuccess($data, $parameters = array())
+    public function onSuccess($data, array $parameters)
     {
         $this->em->persist($data);
 

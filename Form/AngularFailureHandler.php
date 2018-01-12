@@ -61,7 +61,7 @@ class AngularFailureHandler implements FailureHandlerInterface
      *
      * @return mixed Data used to build the response to the user
      */
-    public function onFailure(FormErrorIterator $formErrors, array $customErrors, $parameters = array())
+    public function onFailure(FormErrorIterator $formErrors, array $customErrors, array $parameters)
     {
         $errorsAngular = $customErrors;
 

@@ -23,7 +23,7 @@ class NoOperationHandler implements SuccessHandlerInterface, FailureHandlerInter
      *
      * @return void
      */
-    public function onFailure(FormErrorIterator $formErrors, array $customErrors, $parameters = array())
+    public function onFailure(FormErrorIterator $formErrors, array $customErrors, array $parameters)
     {
     }
 
@@ -35,7 +35,7 @@ class NoOperationHandler implements SuccessHandlerInterface, FailureHandlerInter
      *
      * @return void
      */
-    public function onSuccess($data, $parameters = array())
+    public function onSuccess($data, array $parameters)
     {
     }
 }
