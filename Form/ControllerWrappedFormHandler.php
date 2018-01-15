@@ -4,7 +4,6 @@ namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\Debug\WrappedListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

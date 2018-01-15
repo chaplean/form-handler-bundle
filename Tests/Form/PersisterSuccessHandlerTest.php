@@ -3,7 +3,7 @@
 use Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
-class PersisterSuccessHandlerTest extends TestCase
+class PersisterSuccessHandlerTest extends MockeryTestCase
 {
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler::onSuccess
@@ -36,7 +36,7 @@ class PersisterSuccessHandlerTest extends TestCase
         $dummy = new DummyEntity();
         $dummy->setName('test');
 
-        $dummyEntity = $handler->onSuccess($dummy);
+        $dummyEntity = $handler->onSuccess($dummy, []);
 
         $this->assertEquals($dummy, $dummyEntity);
     }

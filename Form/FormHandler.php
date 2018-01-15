@@ -120,7 +120,7 @@ class FormHandler
      *
      * @return mixed The result produced either by the success handle or by the failure handler
      */
-    public function handle(string $formContainerId, $entity, array $data): mixed
+    public function handle(string $formContainerId, $entity, array $data)
     {
         $form = $this->formFactory->create($formContainerId, $entity);
 

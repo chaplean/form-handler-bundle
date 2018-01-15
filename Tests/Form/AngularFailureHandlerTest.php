@@ -4,10 +4,8 @@ namespace Tests\Chaplean\Bundle\FormHandlerBundle\Form;
 
 use Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\ChapleanUnitTrait;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\ChildModelType;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\ParentModelType;
-use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Model\ParentModel;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -95,7 +93,7 @@ class AngularFailureHandlerTest extends TypeTestCase
         $formErrorIterator = new FormErrorIterator($form, $errors);
 
         $handler = new AngularFailureHandler();
-        $errors = $handler->onFailure($formErrorIterator, []);
+        $errors = $handler->onFailure($formErrorIterator, [], []);
 
         $this->assertEquals(
             [
