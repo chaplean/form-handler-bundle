@@ -1,11 +1,11 @@
 services:
     chaplean_form_handler.form_handler:
-        class: Chaplean\Bundle\FormHandlerBundle\Form\FormHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerWrappedFormHandler
         arguments:
             - '@service_container'
-            - 'chaplean_form_handler.form.handler'
-            - 'chaplean_form_handler.success_handler.controller_wrapped'
-            - 'chaplean_form_handler.failure_handler.controller_wrapped'
+            - '@chaplean_form_handler.form.handler'
+            - '@chaplean_form_handler.success_handler.controller_wrapped'
+            - '@chaplean_form_handler.failure_handler.controller_wrapped'
             - '@fos_rest.view_handler.default'
 
     chaplean_form_handler.form.handler:

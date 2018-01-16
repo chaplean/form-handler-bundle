@@ -53,17 +53,19 @@ class ControllerWrappedFormHandler
     /**
      * ControllerWrappedFormHandler constructor.
      *
-     * @param ContainerInterface   $container
-     * @param ViewHandlerInterface $viewHandler
+     * @param ContainerInterface              $container
+     * @param FormHandler                     $formHandler
+     * @param ControllerWrappedSuccessHandler $successHandler
+     * @param ControllerWrappedFailureHandler $failureHandler
+     * @param ViewHandlerInterface            $viewHandler
      */
     public function __construct(
         ContainerInterface $container,
         FormHandler $formHandler,
         ControllerWrappedSuccessHandler $successHandler,
-        ControllerWrappedFormHandler $failureHandler,
+        ControllerWrappedFailureHandler $failureHandler,
         ViewHandlerInterface $viewHandler
-    )
-    {
+    ) {
         $this->container = $container;
         $this->formHandler = $formHandler;
         $this->successHandler = $successHandler;
@@ -160,6 +162,8 @@ class ControllerWrappedFormHandler
     {
         $successHandler = $this->container->get($this->successHandlerContainerId);
         $failureHandler = $this->container->get($this->failureHandlerContainerId);
+        $preprocessor = null;
+        $customValidator = null;
 
         if ($this->preprocessorContainerId !== null) {
             $preprocessor = $this->container->get($this->preprocessorContainerId);
@@ -190,8 +194,14 @@ class ControllerWrappedFormHandler
 
         $this->formHandler->successHandler($this->successHandler, $this->succesParameters);
         $this->formHandler->failureHandler($this->failureHandler, $this->failureParameters);
-        $this->formHandler->preprocessor($preprocessor, $this->preprocessorParameters);
-        $this->formHandler->validator($customValidator);
+
+        if ($preprocessor !== null) {
+            $this->formHandler->preprocessor($preprocessor, $this->preprocessorParameters);
+        }
+
+        if ($customValidator !== null) {
+            $this->formHandler->validator($customValidator);
+        }
 
         $view = $this->formHandler->handle($formContainerId, $entity, $request->request->all());
 

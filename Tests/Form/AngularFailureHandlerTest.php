@@ -75,6 +75,7 @@ class AngularFailureHandlerTest extends TypeTestCase
 
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler::onFailure
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler::errorToArray()
      *
      * @return void
      */
@@ -82,7 +83,7 @@ class AngularFailureHandlerTest extends TypeTestCase
     {
         $form = $this->factory->create(DummyEntityType::class);
 
-        $error1 = new FormError('Ce formulaire ne doit pas contenir des champs supplémentaires. (extra_thing)');
+        $error1 = new FormError('Ce formulaire ne doit pas contenir des champs supplémentaires.', '', ['{{ extra_fields }}' => 'extra_thing']);
         $error1->setOrigin($form);
 
         $error2 = new FormError('not blank');
