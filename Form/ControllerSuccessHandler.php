@@ -8,13 +8,13 @@ use FOS\RestBundle\View\View;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * Class ControllerWrappedSuccessHandler.
+ * Class ControllerSuccessHandler.
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Matthias - Chaplean <matthias@chaplean.coop>
  * @copyright 2014 - 2018 Chaplean (http://www.chaplean.coop)
  */
-class ControllerWrappedSuccessHandler implements SuccessHandlerInterface
+class ControllerSuccessHandler implements SuccessHandlerInterface
 {
     /** @var EntityManager */
     protected $em;
@@ -30,7 +30,7 @@ class ControllerWrappedSuccessHandler implements SuccessHandlerInterface
     protected $groups;
 
     /**
-     * ControllerWrappedSuccessHandler constructor.
+     * ControllerSuccessHandler constructor.
      *
      * @param RegistryInterface $registry
      */

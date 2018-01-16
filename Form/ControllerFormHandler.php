@@ -8,14 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class ControllerWrappedFormHandler
+ * Class ControllerFormHandler
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Matthias - Chaplean <matthias@chaplean.coop>
  * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     1.0.0
  */
-class ControllerWrappedFormHandler
+class ControllerFormHandler
 {
     /** @var ContainerInterface */
     protected $container;
@@ -32,10 +32,10 @@ class ControllerWrappedFormHandler
     /** @var string */
     protected $customValidatorContainerId;
 
-    /** @var ControllerWrappedSuccessHandler */
+    /** @var ControllerSuccessHandler */
     protected $successHandler;
 
-    /** @var ControllerWrappedFailureHandler */
+    /** @var ControllerFailureHandler */
     protected $failureHandler;
 
     /** @var ViewHandlerInterface */
@@ -51,19 +51,19 @@ class ControllerWrappedFormHandler
     protected $failureParameters = [];
 
     /**
-     * ControllerWrappedFormHandler constructor.
+     * ControllerFormHandler constructor.
      *
-     * @param ContainerInterface              $container
-     * @param FormHandler                     $formHandler
-     * @param ControllerWrappedSuccessHandler $successHandler
-     * @param ControllerWrappedFailureHandler $failureHandler
-     * @param ViewHandlerInterface            $viewHandler
+     * @param ContainerInterface       $container
+     * @param FormHandler              $formHandler
+     * @param ControllerSuccessHandler $successHandler
+     * @param ControllerFailureHandler $failureHandler
+     * @param ViewHandlerInterface     $viewHandler
      */
     public function __construct(
         ContainerInterface $container,
         FormHandler $formHandler,
-        ControllerWrappedSuccessHandler $successHandler,
-        ControllerWrappedFailureHandler $failureHandler,
+        ControllerSuccessHandler $successHandler,
+        ControllerFailureHandler $failureHandler,
         ViewHandlerInterface $viewHandler
     ) {
         $this->container = $container;

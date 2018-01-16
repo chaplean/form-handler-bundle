@@ -7,13 +7,13 @@ use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class ControllerWrappedFailureHandler.
+ * Class ControllerFailureHandler.
  *
  * @package   Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Matthias - Chaplean <matthias@chaplean.coop>
  * @copyright 2014 - 2018 Chaplean (http://www.chaplean.coop)
  */
-class ControllerWrappedFailureHandler implements FailureHandlerInterface
+class ControllerFailureHandler implements FailureHandlerInterface
 {
     /**
      * @var FailureHandlerInterface
