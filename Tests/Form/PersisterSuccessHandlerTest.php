@@ -17,7 +17,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 class PersisterSuccessHandlerTest extends MockeryTestCase
 {
     /**
-     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler::onSuccess
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler::__construct()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler::onSuccess()
      *
      * @return void
      */

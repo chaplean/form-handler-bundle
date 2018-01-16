@@ -11,6 +11,7 @@ use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\ChapleanUnitTrait;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -87,7 +88,11 @@ class FormHandlerTest extends MockeryTestCase
     }
 
     /**
-     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::__construct()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::successHandler()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::preprocessor()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::validator()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle()
      *
      * @return void
      */
@@ -123,7 +128,9 @@ class FormHandlerTest extends MockeryTestCase
     }
 
     /**
-     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::__construct()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::failureHandler()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle()
      *
      * @return void
      */
@@ -143,7 +150,10 @@ class FormHandlerTest extends MockeryTestCase
     }
 
     /**
-     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::__construct()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::successHandler()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::preprocessor()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle()
      *
      * @return void
      */
@@ -176,7 +186,10 @@ class FormHandlerTest extends MockeryTestCase
     }
 
     /**
-     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::__construct()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::failureHandler()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::validator()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\FormHandler::handle()
      *
      * @return void
      */
