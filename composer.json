@@ -27,8 +27,8 @@
     ],
     "require": {
         "php": ">=7.0.8",
-        "doctrine/doctrine-bundle": "^1.4",
-        "doctrine/orm": "^2.4",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/orm": "^2.5",
         "friendsofsymfony/rest-bundle": "^2.1",
         "jms/serializer-bundle": "^1.0 || ^2.0",
         "symfony/config": "^2.8 || ^3.0 || ^4.0",
@@ -42,9 +42,9 @@
         "chaplean/codeship-scripts": "^1.0",
         "chaplean/coding-standard": "^1.1",
         "mockery/mockery": "dev-master",
-        "phpunit/phpunit": "^6.3",
-        "satooshi/php-coveralls": "dev-master",
+        "phpunit/phpunit": "^7.0",
         "symfony/http-kernel": "^2.8 || ^3.0 || ^4.0",
+        "symfony/phpunit-bridge": "^4.0",
         "symfony/serializer": "^2.8 || ^3.0 || ^4.0",
         "symfony/var-dumper": "^2.8 || ^3.0 || ^4.0"
     },
@@ -52,5 +52,9 @@
         "bin-dir": "bin",
         "discard-changes": true,
         "sort-packages": true
+    },
+    "extra": {
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var"
     }
 }

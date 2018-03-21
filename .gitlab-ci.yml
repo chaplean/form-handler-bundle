@@ -25,13 +25,13 @@ before_script:
 test:
     stage: test
     script:
-        - phpdbg -qrr ./bin/phpunit --configuration phpunit.xml.dist --colors=never --coverage-text
+        - phpdbg -qrr ./bin/phpunit --configuration phpunit.xml.dist --colors=never --coverage-html coverage/ --coverage-text
+    artifacts:
+        paths:
+            - coverage/
+        expire_in: 1 day
 
 deploy:
     stage: deploy
     script:
-        - ssh chaplean@satis.chaplean.coop /home/www/chaplean.coop/satis/bin/satis build /home/www/chaplean.coop/satis/satis.json /home/www/chaplean.coop/satis/web 
-    only:
-        - master
-        - release
-        - dev
+        - ssh chaplean@satis.chaplean.coop /home/www/chaplean.coop/satis/bin/satis build /home/www/chaplean.coop/satis/satis.json /home/www/chaplean.coop/satis/web
