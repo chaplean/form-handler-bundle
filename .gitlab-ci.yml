@@ -35,3 +35,7 @@ deploy:
     stage: deploy
     script:
         - ssh chaplean@satis.chaplean.coop /home/www/chaplean.coop/satis/bin/satis build /home/www/chaplean.coop/satis/satis.json /home/www/chaplean.coop/satis/web
+    only:
+        - master
+        - release
+        - dev
