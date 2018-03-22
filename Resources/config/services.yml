@@ -1,11 +1,13 @@
 services:
+    _defaults:
+        autowire: true
+        public: true
+
     chaplean_form_handler.form_handler:
         alias: chaplean_form_handler.form.controller_form_handler
-        deprecated: 'Use chaplean_form_handler.form.controller_form_handler instead.'
 
     chaplean_form_handler.form.handler.no_operation:
         alias: chaplean_form_handler.handler.no_operation
-        deprecated: 'Use chaplean_form_handler.handler.no_operation instead.'
 
     chaplean_form_handler.form.controller_form_handler:
         class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler
