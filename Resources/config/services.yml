@@ -16,6 +16,7 @@ services:
             - '@chaplean_form_handler.form_handler.form_handler'
             - '@chaplean_form_handler.success_handler.controller'
             - '@chaplean_form_handler.failure_handler.controller'
+            - '@chaplean_form_handler.exception_handler.controller'
             - '@fos_rest.view_handler.default'
 
     chaplean_form_handler.form_handler.form_handler:
@@ -28,6 +29,9 @@ services:
 
     chaplean_form_handler.failure_handler.angular:
         class: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
+
+    chaplean_form_handler.exception_handler.controller:
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerExceptionHandler
 
     chaplean_form_handler.success_handler.controller:
         class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler

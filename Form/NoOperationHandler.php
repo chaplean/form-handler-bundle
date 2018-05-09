@@ -2,6 +2,7 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
+use Chaplean\Bundle\FormHandlerBundle\Exception\Exception;
 use Symfony\Component\Form\FormErrorIterator;
 
 /**
@@ -12,7 +13,7 @@ use Symfony\Component\Form\FormErrorIterator;
  * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
  * @since     2.1.0
  */
-class NoOperationHandler implements SuccessHandlerInterface, FailureHandlerInterface
+class NoOperationHandler implements SuccessHandlerInterface, FailureHandlerInterface, ExceptionHandlerInterface
 {
     /**
      * Does nothing.
@@ -36,6 +37,17 @@ class NoOperationHandler implements SuccessHandlerInterface, FailureHandlerInter
      * @return void
      */
     public function onSuccess($data, array $parameters)
+    {
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @param Exception $exception
+     *
+     * @return void
+     */
+    public function onException(Exception $exception)
     {
     }
 }

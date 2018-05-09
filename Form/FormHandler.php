@@ -2,6 +2,7 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
+use Chaplean\Bundle\FormHandlerBundle\Exception\Exception;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -20,6 +21,9 @@ class FormHandler
 
     /** @var FailureHandlerInterface */
     protected $failureHandler;
+
+    /** @var ExceptionHandlerInterface */
+    protected $exceptionHandler;
 
     /** @var PreprocessorInterface */
     protected $preprocessor;
@@ -82,6 +86,21 @@ class FormHandler
     }
 
     /**
+     * ExceptionHandlerInterface you want to setup
+     *
+     * @param FailureHandlerInterface $failureHandler
+     * @param array                   $parameters
+     *
+     * @return self
+     */
+    public function exceptionHandler(ExceptionHandlerInterface $exceptionHandler): self
+    {
+        $this->exceptionHandler = $exceptionHandler;
+
+        return $this;
+    }
+
+    /**
      * PreprocessorInterface you want to setup
      *
      * @param PreprocessorInterface $preprocessor
@@ -119,6 +138,7 @@ class FormHandler
      * @param array  $data            The data to parse
      *
      * @return mixed The result produced either by the success handle or by the failure handler
+     * @throws Exception
      */
     public function handle(string $formContainerId, $entity, array $data)
     {
@@ -133,12 +153,21 @@ class FormHandler
         $form->submit($data);
         $formValidation = $form->isValid();
 
-        if ($formValidation && $customValidation) {
-            $result = $this->successHandler->onSuccess($form->getData(), $this->succesParameters);
-        } else {
-            $customErrors = ($this->customValidator !== null) ? $this->customValidator->getErrors() : [];
+        try {
+            if ($formValidation && $customValidation) {
+                $result = $this->successHandler->onSuccess($form->getData(), $this->succesParameters);
+            } else {
+                $customErrors = ($this->customValidator !== null) ? $this->customValidator->getErrors() : [];
 
-            $result = $this->failureHandler->onFailure($form->getErrors(true), $customErrors, $this->failureParameters);
+                $result = $this->failureHandler->onFailure($form->getErrors(true), $customErrors, $this->failureParameters);
+            }
+        } catch (Exception $exception) {
+            if ($this->exceptionHandler !== null) {
+                $result = $this->exceptionHandler->onException($exception);
+            } else {
+                throw $exception;
+            }
+
         }
 
         return $result;
