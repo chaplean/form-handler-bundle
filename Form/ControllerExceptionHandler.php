@@ -41,6 +41,6 @@ class ControllerExceptionHandler implements ExceptionHandlerInterface
             return $this->handler->onException($exception);
         }
 
-        return View::create($exception->getContent(), $exception->getStatusCode());
+        return View::create(['error' => $exception->getContent()], $exception->getStatusCode());
     }
 }

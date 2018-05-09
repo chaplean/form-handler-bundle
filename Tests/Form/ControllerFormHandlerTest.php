@@ -2,6 +2,7 @@
 
 namespace Tests\Chaplean\Bundle\FormHandlerBundle\Form;
 
+use Chaplean\Bundle\FormHandlerBundle\Form\ControllerExceptionHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\ControllerFailureHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler;
@@ -59,6 +60,11 @@ class ControllerFormHandlerTest extends MockeryTestCase
     private $failureMock;
 
     /**
+     * @var ControllerExceptionHandler|\Mockery\MockInterface
+     */
+    private $exceptionMock;
+
+    /**
      * @var ValidatorInterface|\Mockery\MockInterface
      */
     private $validatorMock;
@@ -99,6 +105,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
         $this->successMock = \Mockery::mock(ControllerSuccessHandler::class);
         $this->failureMock = \Mockery::mock(ControllerFailureHandler::class);
+        $this->exceptionMock = \Mockery::mock(ControllerExceptionHandler::class);
         $this->validatorMock = \Mockery::mock(ValidatorInterface::class);
         $this->preprocessorMock = \Mockery::mock(PreprocessorInterface::class);
     }
@@ -128,9 +135,11 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
         $this->successMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
         $this->failureMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
+        $this->exceptionMock->shouldReceive('setHandler')->once()->with(null)->andReturnSelf();
 
         $this->formHandler->shouldReceive('successHandler')->once()->withArgs([$this->successMock, []])->andReturnSelf();
         $this->formHandler->shouldReceive('failureHandler')->once()->withArgs([$this->failureMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('exceptionHandler')->once()->withArgs([$this->exceptionMock])->andReturnSelf();
         $this->formHandler->shouldReceive('preprocessor')->once()->withArgs([$mockHandler, []])->andReturnSelf();
         $this->formHandler->shouldReceive('validator')->once()->with($mockHandler)->andReturnSelf();
 
@@ -141,6 +150,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -170,9 +180,11 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
         $this->successMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
         $this->failureMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
+        $this->exceptionMock->shouldReceive('setHandler')->once()->with(null)->andReturnSelf();
 
         $this->formHandler->shouldReceive('successHandler')->once()->withArgs([$this->successMock, []])->andReturnSelf();
         $this->formHandler->shouldReceive('failureHandler')->once()->withArgs([$this->failureMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('exceptionHandler')->once()->withArgs([$this->exceptionMock])->andReturnSelf();
 
         $this->formHandler->shouldReceive('handle')->once()->andReturn(View::create(['some return value' => 42], 400));
 
@@ -181,6 +193,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -208,9 +221,11 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
         $this->successMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
         $this->failureMock->shouldReceive('setHandler')->once()->with($mockHandler)->andReturnSelf();
+        $this->exceptionMock->shouldReceive('setHandler')->once()->with(null)->andReturnSelf();
 
         $this->formHandler->shouldReceive('successHandler')->once()->withArgs([$this->successMock, []])->andReturnSelf();
         $this->formHandler->shouldReceive('failureHandler')->once()->withArgs([$this->failureMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('exceptionHandler')->once()->withArgs([$this->exceptionMock])->andReturnSelf();
 
         $this->formHandler->shouldReceive('handle')->once()->andReturn(View::create($dummy));
 
@@ -225,6 +240,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -257,6 +273,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 //            $this->formHandler,
 //            $this->successMock,
 //            $this->failureMock,
+//            $this->exceptionMock,
 //            $this->viewHandlerMock
 //        );
 //
@@ -286,6 +303,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -497,6 +515,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -527,6 +546,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -557,6 +577,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
@@ -587,6 +608,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->formHandler,
             $this->successMock,
             $this->failureMock,
+            $this->exceptionMock,
             $this->viewHandlerMock
         );
 
