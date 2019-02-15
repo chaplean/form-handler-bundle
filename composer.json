@@ -1,5 +1,4 @@
-{
-    "name": "chaplean/form-handler-bundle",
+{ "name": "chaplean/form-handler-bundle",
     "license": "MIT",
     "type": "symfony-bundle",
     "description": "The Bundle base to fork",
@@ -30,7 +29,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "friendsofsymfony/rest-bundle": "^2.1",
-        "jms/serializer-bundle": "^1.0 || ^2.0",
+        "jms/serializer-bundle": "^1.0 || ^2.0 || ^3.0",
         "symfony/config": "^3.0 || ^4.0",
         "symfony/console": " ^3.0 || ^4.0",
         "symfony/dependency-injection": "^3.0 || ^4.0",
@@ -39,10 +38,9 @@
         "symfony/yaml": "^3.0 || ^4.0"
     },
     "require-dev": {
-        "chaplean/codeship-scripts": "^1.0",
         "chaplean/coding-standard": "^1.1",
         "mockery/mockery": "dev-master",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^7.0 || ^8.0",
         "symfony/http-kernel": "^3.0 || ^4.0",
         "symfony/phpunit-bridge": "^4.0",
         "symfony/serializer": "^3.0 || ^4.0",
