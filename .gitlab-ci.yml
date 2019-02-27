@@ -16,15 +16,18 @@ cache:
         - vendor/
 
 before_script:
-    - mkdir -p /root/.ssh
-    - cp ./private/ssh/* /root/.ssh/
-    - chmod 600 /root/.ssh/*
-    - composer install --prefer-dist --no-interaction
-    - chmod -R +x ./bin/
+   - mkdir -p /root/.ssh
+   - echo -e "Host *\n\tForwardAgent yes\n\n" > /root/.ssh/config
+   - echo "$CHAPLEAN_DEPLOY_KEY" >> /root/.ssh/id_rsa && chmod 0600 /root/.ssh/id_rsa
+   - echo "$CHAPLEAN_KNOWN_HOSTS" >> /root/.ssh/known_hosts && chmod 0600 /root/.ssh/known_hosts
+   - eval `ssh-agent -s`
+   - ssh-add
 
 test:
     stage: test
     script:
+        - composer install --prefer-dist --no-interaction
+        - chmod -R +x ./bin/
         - phpdbg -qrr ./bin/phpunit --configuration phpunit.xml.dist --colors=never --coverage-html coverage/ --coverage-text
     artifacts:
         paths:

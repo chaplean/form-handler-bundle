@@ -5,6 +5,7 @@ services:
         build: .
         volumes:
             - .:/var/www/symfony
+            - ~/.ssh:/root/.ssh
         links:
             - mysql:mysql
     mysql:
