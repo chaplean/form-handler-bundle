@@ -3,8 +3,9 @@
 namespace Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation as JMS;
+
 
 /**
  * Class DummyEntity
@@ -25,7 +26,7 @@ class DummyEntity
      * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @JMS\Groups({"dummy_entity_id"})
+     * @Groups({"dummy_entity_id"})
      */
     private $id;
 
@@ -35,7 +36,7 @@ class DummyEntity
      * @ORM\Column(type="string", length=255, nullable=false, name="name")
      * @Assert\NotBlank(message="not blank")
      *
-     * @JMS\Groups({"dummy_entity_name"})
+     * @Groups({"dummy_entity_name"})
      */
     private $name;
 

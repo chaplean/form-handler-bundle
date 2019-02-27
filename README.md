@@ -35,7 +35,7 @@ class FakeController extends FOSRestController
      * Those two first actions uses the defaults behaviours of FormHandler.
      * On success it will persist the DummyEntity given to handle.
      * On failure it will convert the form errors to an angular friendly format.
-     * No JMS groups will be used when serializing your entity to create the response on success.
+     * No groups will be used when serializing your entity to create the response on success.
      *
      * The first action works with a new DummyEntity.
      * The second action works with an existing DummyEntity.

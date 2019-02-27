@@ -159,7 +159,7 @@ class ControllerFormHandler
     }
 
     /**
-     * List of groups you want JMS serializer to use when serializing your entity in the success case
+     * List of groups you want when serializing your entity in the success case
      *
      * @param array $groups
      *
