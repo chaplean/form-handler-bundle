@@ -88,8 +88,7 @@ class FormHandler
     /**
      * ExceptionHandlerInterface you want to setup
      *
-     * @param FailureHandlerInterface $failureHandler
-     * @param array                   $parameters
+     * @param ExceptionHandlerInterface $exceptionHandler
      *
      * @return self
      */

@@ -2,8 +2,7 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class PersisterSuccessHandler.
@@ -15,17 +14,17 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class PersisterSuccessHandler implements SuccessHandlerInterface
 {
-    /** @var EntityManager  */
+    /** @var EntityManagerInterface  */
     protected $em;
 
     /**
      * PersisterSuccessHandler constructor.
      *
-     * @param RegistryInterface $registry
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->em = $registry->getManager();
+        $this->em = $entityManager;
     }
 
     /**

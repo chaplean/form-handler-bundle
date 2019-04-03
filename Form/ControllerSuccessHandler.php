@@ -2,10 +2,10 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ControllerSuccessHandler.
@@ -16,7 +16,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ControllerSuccessHandler implements SuccessHandlerInterface
 {
-    /** @var EntityManager */
+    /**
+     * @var EntityManagerInterface
+     */
     protected $em;
 
     /**
@@ -32,11 +34,11 @@ class ControllerSuccessHandler implements SuccessHandlerInterface
     /**
      * ControllerSuccessHandler constructor.
      *
-     * @param RegistryInterface $registry
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->em = $registry->getManager();
+        $this->em = $entityManager;
     }
 
     /**
@@ -73,6 +75,12 @@ class ControllerSuccessHandler implements SuccessHandlerInterface
     public function onSuccess($data, array $parameters): View
     {
         $entity = $this->handler->onSuccess($data, $parameters);
+        $isCreated = false;
+
+        if ($entity !== null) {
+            $isCreated = $this->em->getUnitOfWork()->isScheduledForInsert($data);
+        }
+
         $this->em->flush();
 
         $view = View::create($entity);
@@ -81,6 +89,10 @@ class ControllerSuccessHandler implements SuccessHandlerInterface
             $context = new Context();
             $context->setGroups($this->groups);
             $view->setContext($context);
+        }
+
+        if ($isCreated) {
+            $view->setStatusCode(Response::HTTP_CREATED);
         }
 
         return $view;

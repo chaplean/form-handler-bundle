@@ -15,7 +15,7 @@ use Symfony\Component\Form\Test\TypeTestCase;
  *
  * @package   Tests\Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Matthias - Chaplean <matthias@chaplean.coop>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
+ * @copyright 2014 - 2017 Chaplean (https://www.chaplean.coop)
  * @since     1.0.0
  */
 class AngularFailureHandlerTest extends TypeTestCase

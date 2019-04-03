@@ -8,15 +8,19 @@ use Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\FailureHandlerInterface;
 use Chaplean\Bundle\FormHandlerBundle\Form\FormHandler;
+use Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler;
+use Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler;
 use Chaplean\Bundle\FormHandlerBundle\Form\PreprocessorInterface;
 use Chaplean\Bundle\FormHandlerBundle\Form\SuccessHandlerInterface;
 use Chaplean\Bundle\FormHandlerBundle\Form\ValidatorInterface;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandler;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,7 +34,7 @@ use Symfony\Component\Serializer\Serializer;
  *
  * @package   Tests\Chaplean\Bundle\FormHandlerBundle\Form
  * @author    Valentin - Chaplean <valentin@chaplean.coop>
- * @copyright 2014 - 2018 Chaplean (http://www.chaplean.coop)
+ * @copyright 2014 - 2018 Chaplean (https://www.chaplean.coop)
  */
 class ControllerFormHandlerTest extends MockeryTestCase
 {
@@ -116,6 +120,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::successHandler()
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::preprocessor()
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::validator()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @return void
      */
@@ -167,6 +172,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::failureHandler()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @return void
      */
@@ -207,6 +213,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @return void
      */
@@ -244,7 +251,59 @@ class ControllerFormHandlerTest extends MockeryTestCase
             $this->viewHandlerMock
         );
 
+        $response = $formHandler->handle(DummyEntityType::class, new DummyEntity(), $request);
+
+        $this->assertEquals('{"id":1,"name":"something"}', $response->getContent());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    /**
+     * @group t33209
+     *
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
+     *
+     * @return void
+     */
+    public function testHandleSuccessWithDefaultsWithHandlerInjection()
+    {
+        $dummy = new DummyEntity();
+        $dummy->setId(1);
+        $dummy->setName('something');
+
+        $successHandlerInstance = new NoOperationHandler();
+        $failureHandlerinstance = new NoOperationHandler();
+
+        $this->successMock->shouldReceive('setGroups')->once()->with([])->andReturnSelf();
+        $this->successMock->shouldReceive('setHandler')->once()->with($successHandlerInstance)->andReturnSelf();
+        $this->failureMock->shouldReceive('setHandler')->once()->with($failureHandlerinstance)->andReturnSelf();
+        $this->exceptionMock->shouldReceive('setHandler')->once()->with(null)->andReturnSelf();
+
+        $this->formHandler->shouldReceive('successHandler')->once()->withArgs([$this->successMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('failureHandler')->once()->withArgs([$this->failureMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('exceptionHandler')->once()->withArgs([$this->exceptionMock])->andReturnSelf();
+
+        $this->formHandler->shouldReceive('handle')->once()->andReturn(View::create($dummy));
+
+        $request = new Request(
+            [],
+            ['name' => 'something']
+        );
+        $request->setRequestFormat('json');
+
+        $formHandler = new ControllerFormHandler(
+            $this->containerMock,
+            $this->formHandler,
+            $this->successMock,
+            $this->failureMock,
+            $this->exceptionMock,
+            $this->viewHandlerMock
+        );
+
         $response = $formHandler
+            ->successHandler($successHandlerInstance)
+            ->failureHandler($failureHandlerinstance)
+            ->setGroups([])
             ->handle(DummyEntityType::class, new DummyEntity(), $request);
 
         $this->assertEquals('{"id":1,"name":"something"}', $response->getContent());
@@ -286,6 +345,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 //
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::setGroups
      *
      * @return void
@@ -495,6 +555,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 //
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage  'test.mock.success' is supposed to implement Chaplean\Bundle\FormHandlerBundle\Form\SuccessHandlerInterface
@@ -505,7 +566,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
     {
         $mockHandler = \Mockery::mock(FailureHandlerInterface::class);
 
-        $this->containerMock->shouldReceive('get')->times(2)->andReturn($mockHandler);
+        $this->containerMock->shouldReceive('get')->times(1)->andReturn($mockHandler);
 
         $request = new Request();
         $request->setRequestFormat('json');
@@ -526,6 +587,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage  'test.mock.failure' is supposed to implement Chaplean\Bundle\FormHandlerBundle\Form\FailureHandlerInterface
@@ -557,6 +619,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage  'test.mock.preprocessor' is supposed to implement Chaplean\Bundle\FormHandlerBundle\Form\PreprocessorInterface
@@ -588,6 +651,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
 
     /**
      * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle()
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage  'test.mock.validator' is supposed to implement Chaplean\Bundle\FormHandlerBundle\Form\ValidatorInterface

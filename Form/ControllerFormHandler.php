@@ -21,10 +21,10 @@ class ControllerFormHandler
     protected $container;
 
     /** @var string */
-    protected $successHandlerContainerId = 'chaplean_form_handler.success_handler.persister';
+    protected $successHandlerContainerId = PersisterSuccessHandler::class;
 
     /** @var string */
-    protected $failureHandlerContainerId = 'chaplean_form_handler.failure_handler.angular';
+    protected $failureHandlerContainerId = AngularFailureHandler::class;
 
     /** @var string */
     protected $exceptionHandlerContainerId;
@@ -43,6 +43,9 @@ class ControllerFormHandler
 
     /** @var ControllerExceptionHandler */
     protected $exceptionHandler;
+
+    /** @var FormHandler */
+    protected $formHandler;
 
     /** @var ViewHandlerInterface */
     protected $viewHandler;
@@ -85,12 +88,12 @@ class ControllerFormHandler
     /**
      * Name in the container of the SuccessHandler you want to setup
      *
-     * @param string $successHandler
-     * @param array  $parameters
+     * @param string|SuccessHandlerInterface $successHandler
+     * @param array                          $parameters
      *
      * @return self
      */
-    public function successHandler(string $successHandler, array $parameters = []): self
+    public function successHandler($successHandler, array $parameters = []): self
     {
         $this->successHandlerContainerId = $successHandler;
         $this->succesParameters = $parameters;
@@ -101,12 +104,12 @@ class ControllerFormHandler
     /**
      * Name in the container of the FailureHandler you want to setup
      *
-     * @param string $failureHandler
-     * @param array  $parameters
+     * @param string|FailureHandlerInterface $failureHandler
+     * @param array                          $parameters
      *
      * @return self
      */
-    public function failureHandler(string $failureHandler, array $parameters = []): self
+    public function failureHandler($failureHandler, array $parameters = []): self
     {
         $this->failureHandlerContainerId = $failureHandler;
         $this->failureParameters = $parameters;
@@ -117,11 +120,11 @@ class ControllerFormHandler
     /**
      * Name in the container of the ExceptionHandler you want to setup
      *
-     * @param string $exceptionHandler
+     * @param string|ExceptionHandlerInterface $exceptionHandler
      *
      * @return self
      */
-    public function exceptionHandler(string $exceptionHandler): self
+    public function exceptionHandler($exceptionHandler): self
     {
         $this->exceptionHandlerContainerId = $exceptionHandler;
 
@@ -131,12 +134,12 @@ class ControllerFormHandler
     /**
      * Name in the container of the Preprocessor you want to setup
      *
-     * @param string $preprocessor
+     * @param string|PreprocessorInterface $preprocessor
      * @param array  $parameters
      *
      * @return self
      */
-    public function preprocessor(string $preprocessor, array $parameters = []): self
+    public function preprocessor($preprocessor, array $parameters = []): self
     {
         $this->preprocessorContainerId = $preprocessor;
         $this->preprocessorParameters = $parameters;
@@ -147,11 +150,11 @@ class ControllerFormHandler
     /**
      * Name in the container of the Validator you want to setup
      *
-     * @param string $validator
+     * @param string|ValidatorInterface $validator
      *
      * @return self
      */
-    public function validator(string $validator): self
+    public function validator($validator): self
     {
         $this->customValidatorContainerId = $validator;
 
@@ -183,43 +186,16 @@ class ControllerFormHandler
      */
     public function handle(string $formContainerId, $entity, Request $request): Response
     {
-        $successHandler = $this->container->get($this->successHandlerContainerId);
-        $failureHandler = $this->container->get($this->failureHandlerContainerId);
-        $exceptionHandler = null;
-        $preprocessor = null;
-        $customValidator = null;
-
-        if ($this->exceptionHandlerContainerId !== null) {
-            $exceptionHandler = $this->container->get($this->exceptionHandlerContainerId);
-        }
-
-        if ($this->preprocessorContainerId !== null) {
-            $preprocessor = $this->container->get($this->preprocessorContainerId);
-        }
-
-        if ($this->customValidatorContainerId !== null) {
-            $customValidator = $this->container->get($this->customValidatorContainerId);
-        }
-
-        if (!$successHandler instanceof SuccessHandlerInterface) {
-            throw new \InvalidArgumentException("'" . $this->successHandlerContainerId . "' is supposed to implement " . SuccessHandlerInterface::class);
-        }
-
-        if (!$failureHandler instanceof FailureHandlerInterface) {
-            throw new \InvalidArgumentException("'" . $this->failureHandlerContainerId . "' is supposed to implement " . FailureHandlerInterface::class);
-        }
-
-        if ($exceptionHandler !== null && !$exceptionHandler instanceof ExceptionHandlerInterface) {
-            throw new \InvalidArgumentException("'" . $this->exceptionHandlerContainerId . "' is supposed to implement " . ExceptionHandlerInterface::class);
-        }
-
-        if ($preprocessor !== null && !$preprocessor instanceof PreprocessorInterface) {
-            throw new \InvalidArgumentException("'" . $this->preprocessorContainerId . "' is supposed to implement " . PreprocessorInterface::class);
-        }
-
-        if ($customValidator !== null && !$customValidator instanceof ValidatorInterface) {
-            throw new \InvalidArgumentException("'" . $this->customValidatorContainerId . "' is supposed to implement " . ValidatorInterface::class);
-        }
+        /** @var SuccessHandlerInterface $successHandler */
+        $successHandler = $this->getHandler($this->successHandlerContainerId, SuccessHandlerInterface::class);
+        /** @var FailureHandlerInterface $failureHandler */
+        $failureHandler = $this->getHandler($this->failureHandlerContainerId, FailureHandlerInterface::class);
+        /** @var ExceptionHandlerInterface $exceptionHandler */
+        $exceptionHandler = $this->getHandler($this->exceptionHandlerContainerId, ExceptionHandlerInterface::class, false);
+        /** @var PreprocessorInterface $preprocessor */
+        $preprocessor = $this->getHandler($this->preprocessorContainerId, PreprocessorInterface::class, false);
+        /** @var ValidatorInterface $customValidator */
+        $customValidator = $this->getHandler($this->customValidatorContainerId, ValidatorInterface::class, false);
 
         $this->successHandler->setHandler($successHandler);
         $this->failureHandler->setHandler($failureHandler);
@@ -245,5 +221,29 @@ class ControllerFormHandler
         $view = $this->formHandler->handle($formContainerId, $entity, $data);
 
         return $this->viewHandler->handle($view, $request);
+    }
+
+    /**
+     * @param string|object|null $handlerContainerId
+     * @param string             $expectedClass
+     * @param bool               $mandatory
+     *
+     * @return object|null
+     */
+    private function getHandler($handlerContainerId, string $expectedClass, bool $mandatory = true)
+    {
+        if ($handlerContainerId instanceof $expectedClass) {
+            return $handlerContainerId;
+        } else if (!$mandatory && ($handlerContainerId === null)) {
+            return null;
+        }
+
+        $handler = $this->container->get($handlerContainerId);
+
+        if ($handler !== null && !$handler instanceof $expectedClass) {
+            throw new \InvalidArgumentException("'" . $handlerContainerId . "' is supposed to implement " . $expectedClass);
+        }
+
+        return $handler;
     }
 }

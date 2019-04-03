@@ -6,7 +6,7 @@ namespace Chaplean\Bundle\FormHandlerBundle\Tests\Resources;
  * Trait ChapleanUnitTrait.
  *
  * @author    Tom - Chaplean <tom@chaplean.coop>
- * @copyright 2014 - 2017 Chaplean (http://www.chaplean.coop)
+ * @copyright 2014 - 2017 Chaplean (https://www.chaplean.coop)
  * @since     2.0.0
  */
 trait ChapleanUnitTrait

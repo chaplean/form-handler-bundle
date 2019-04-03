@@ -18,8 +18,9 @@ class ControllerExceptionHandler implements ExceptionHandlerInterface
      * @var ExceptionHandlerInterface
      */
     protected $handler;
+
     /**
-     * @param SuccessHandlerInterface|null $handler
+     * @param ExceptionHandlerInterface|null $handler
      *
      * @return void
      */
