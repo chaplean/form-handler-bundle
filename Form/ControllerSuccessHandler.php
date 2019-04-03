@@ -78,7 +78,7 @@ class ControllerSuccessHandler implements SuccessHandlerInterface
         $isCreated = false;
 
         if ($entity !== null) {
-            $isCreated = $this->em->getUnitOfWork()->isScheduledForInsert($data);
+            $isCreated = $this->em->getUnitOfWork()->isScheduledForInsert($entity);
         }
 
         $this->em->flush();
