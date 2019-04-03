@@ -59,7 +59,10 @@ class ControllerSuccessHandlerTest extends MockeryTestCase
         $entity = new DummyEntity();
         $handlerInstance = new NoOperationHandler();
 
-        $this->em->shouldNotReceive('getUnitOfWork');
+        $uow = \Mockery::mock(UnitOfWork::class);
+        $uow->shouldReceive('isScheduledForInsert')->once()->with(null)->andThrow(new \Exception());
+
+        $this->em->shouldReceive('getUnitOfWork')->once()->andReturn($uow);
         $this->em->shouldReceive('flush')->once();
 
         $this->handler->setHandler($handlerInstance);
