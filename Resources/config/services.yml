@@ -13,31 +13,41 @@ services:
     Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler: ~
 
     chaplean_form_handler.form_handler:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler
+        alias: chaplean_form_handler.form.controller_form_handler
 
     chaplean_form_handler.form.handler.no_operation:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler
+        alias: chaplean_form_handler.handler.no_operation
 
     chaplean_form_handler.form.controller_form_handler:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler
+        arguments:
+            - '@service_container'
+            - '@chaplean_form_handler.form_handler.form_handler'
+            - '@chaplean_form_handler.success_handler.controller'
+            - '@chaplean_form_handler.failure_handler.controller'
+            - '@chaplean_form_handler.exception_handler.controller'
+            - '@fos_rest.view_handler.default'
 
     chaplean_form_handler.form_handler.form_handler:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\FormHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\FormHandler
+        arguments: ['@form.factory']
 
     chaplean_form_handler.success_handler.persister:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler
+        arguments: ['@doctrine']
 
     chaplean_form_handler.failure_handler.angular:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
 
     chaplean_form_handler.exception_handler.controller:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\ControllerExceptionHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerExceptionHandler
 
     chaplean_form_handler.success_handler.controller:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler
+        arguments: ['@doctrine']
 
     chaplean_form_handler.failure_handler.controller:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFailureHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFailureHandler
 
     chaplean_form_handler.handler.no_operation:
-        alias: Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler
+        class: Chaplean\Bundle\FormHandlerBundle\Form\NoOperationHandler

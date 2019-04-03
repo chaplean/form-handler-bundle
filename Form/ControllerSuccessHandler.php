@@ -78,7 +78,11 @@ class ControllerSuccessHandler implements SuccessHandlerInterface
         $isCreated = false;
 
         if ($entity !== null) {
-            $isCreated = $this->em->getUnitOfWork()->isScheduledForInsert($entity);
+            try {
+                $isCreated = $this->em->getUnitOfWork()->isScheduledForInsert($entity);
+            } catch (\Exception $e) {
+                // The entity is not an object, so it cannot be persisted
+            }
         }
 
         $this->em->flush();
