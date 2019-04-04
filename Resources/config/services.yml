@@ -34,7 +34,7 @@ services:
 
     chaplean_form_handler.success_handler.persister:
         class: Chaplean\Bundle\FormHandlerBundle\Form\PersisterSuccessHandler
-        arguments: ['@doctrine']
+        arguments: ['@doctrine.orm.entity-manager']
 
     chaplean_form_handler.failure_handler.angular:
         class: Chaplean\Bundle\FormHandlerBundle\Form\AngularFailureHandler
@@ -44,7 +44,7 @@ services:
 
     chaplean_form_handler.success_handler.controller:
         class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerSuccessHandler
-        arguments: ['@doctrine']
+        arguments: ['@doctrine.orm.entity-manager']
 
     chaplean_form_handler.failure_handler.controller:
         class: Chaplean\Bundle\FormHandlerBundle\Form\ControllerFailureHandler
