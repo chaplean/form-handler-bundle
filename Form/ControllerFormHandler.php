@@ -2,6 +2,7 @@
 
 namespace Chaplean\Bundle\FormHandlerBundle\Form;
 
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -178,13 +179,13 @@ class ControllerFormHandler
     /**
      * Handle the form processing
      *
-     * @param string  $formContainerId The form service name in the container
-     * @param object  $entity          The entity (doctrine entity, some model, whatever the form uses)
-     * @param Request $request         The request
+     * @param string                        $formContainerId The form service name in the container
+     * @param object                        $entity          The entity (doctrine entity, some model, whatever the form uses)
+     * @param Request|ParamFetcherInterface $parameters      The request or the parameters
      *
      * @return Response
      */
-    public function handle(string $formContainerId, $entity, Request $request): Response
+    public function handle(string $formContainerId, $entity, $parameters): Response
     {
         /** @var SuccessHandlerInterface $successHandler */
         $successHandler = $this->getHandler($this->successHandlerContainerId, SuccessHandlerInterface::class);
@@ -213,9 +214,16 @@ class ControllerFormHandler
             $this->formHandler->validator($customValidator);
         }
 
-        $data = $request->request->all();
-        if ($request->getMethod() === 'GET') {
-            $data = $request->query->all();
+        if ($parameters instanceof Request) {
+            $request = $parameters;
+            $data = $request->request->all();
+
+            if ($request->getMethod() === 'GET') {
+                $data = $request->query->all();
+            }
+        } else {
+            $request = null;
+            $data = $parameters->all();
         }
 
         $view = $this->formHandler->handle($formContainerId, $entity, $data);

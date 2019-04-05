@@ -16,6 +16,8 @@ use Chaplean\Bundle\FormHandlerBundle\Form\ValidatorInterface;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Entity\DummyEntity;
 use Chaplean\Bundle\FormHandlerBundle\Tests\Resources\Form\Type\DummyEntityType;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandler;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -79,6 +81,11 @@ class ControllerFormHandlerTest extends MockeryTestCase
     private $preprocessorMock;
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -89,6 +96,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
         $normalizers = array(new ObjectNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
+        $this->requestStack = new RequestStack();
 
         $this->containerMock = \Mockery::mock(ContainerInterface::class);
         $this->formHandler = \Mockery::mock(FormHandler::class);
@@ -96,7 +104,7 @@ class ControllerFormHandlerTest extends MockeryTestCase
             \Mockery::mock('Symfony\Component\Routing\RouterInterface'),
             \Mockery::mock('FOS\RestBundle\Serializer\Serializer'),
             \Mockery::mock('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface'),
-            new RequestStack(),
+            $this->requestStack,
             ['json' => false]
         );
 
@@ -305,6 +313,64 @@ class ControllerFormHandlerTest extends MockeryTestCase
             ->failureHandler($failureHandlerinstance)
             ->setGroups([])
             ->handle(DummyEntityType::class, new DummyEntity(), $request);
+
+        $this->assertEquals('{"id":1,"name":"something"}', $response->getContent());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    /**
+     * @group t33209
+     *
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::handle
+     * @covers \Chaplean\Bundle\FormHandlerBundle\Form\ControllerFormHandler::getHandler()
+     *
+     * @return void
+     */
+    public function testHandleSuccessWithDefaultsWithHandlerInjectionWithParamFetcherInterface()
+    {
+        $dummy = new DummyEntity();
+        $dummy->setId(1);
+        $dummy->setName('something');
+
+        $successHandlerInstance = new NoOperationHandler();
+        $failureHandlerinstance = new NoOperationHandler();
+
+        $this->successMock->shouldReceive('setGroups')->once()->with([])->andReturnSelf();
+        $this->successMock->shouldReceive('setHandler')->once()->with($successHandlerInstance)->andReturnSelf();
+        $this->failureMock->shouldReceive('setHandler')->once()->with($failureHandlerinstance)->andReturnSelf();
+        $this->exceptionMock->shouldReceive('setHandler')->once()->with(null)->andReturnSelf();
+
+        $this->formHandler->shouldReceive('successHandler')->once()->withArgs([$this->successMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('failureHandler')->once()->withArgs([$this->failureMock, []])->andReturnSelf();
+        $this->formHandler->shouldReceive('exceptionHandler')->once()->withArgs([$this->exceptionMock])->andReturnSelf();
+
+        $this->formHandler->shouldReceive('handle')->once()->andReturn(View::create($dummy));
+
+        $request = new Request(
+            [],
+            ['name' => 'something']
+        );
+        $request->setRequestFormat('json');
+
+        $this->requestStack->push($request);
+
+        $parameters = \Mockery::mock(ParamFetcherInterface::class);
+        $parameters->shouldReceive('all')->once()->andReturn(['name' => 'something']);
+
+        $formHandler = new ControllerFormHandler(
+            $this->containerMock,
+            $this->formHandler,
+            $this->successMock,
+            $this->failureMock,
+            $this->exceptionMock,
+            $this->viewHandlerMock
+        );
+
+        $response = $formHandler
+            ->successHandler($successHandlerInstance)
+            ->failureHandler($failureHandlerinstance)
+            ->setGroups([])
+            ->handle(DummyEntityType::class, new DummyEntity(), $parameters);
 
         $this->assertEquals('{"id":1,"name":"something"}', $response->getContent());
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
