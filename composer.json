@@ -50,6 +50,9 @@
         "discard-changes": true,
         "sort-packages": true
     },
+    "conflict": {
+        "chaplean/unit-bundle": "<8.0.0"
+    },
     "extra": {
         "symfony-bin-dir": "bin",
         "symfony-var-dir": "var"
